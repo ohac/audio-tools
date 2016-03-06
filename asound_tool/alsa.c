@@ -56,13 +56,13 @@ int connect_midi(const char* sender_name, const char* dest_name)
       int midi_vos = snd_seq_port_info_get_midi_voices(pinfo);
       if (ptype & (SND_SEQ_PORT_TYPE_PORT | SND_SEQ_PORT_TYPE_APPLICATION)) {
         if (cap & SND_SEQ_PORT_CAP_SUBS_READ) {
-          if (!strcmp(pname, "microKORG XL MIDI 2")) {
+          if (!strcmp(pname, sender_name)) {
             sender = *snd_seq_port_info_get_addr(pinfo);
             found |= 1 << 0;
           }
         }
         if (cap & SND_SEQ_PORT_CAP_SUBS_WRITE) {
-          if (!strcmp(pname, "nekobee DSSI plugin")) {
+          if (!strcmp(pname, dest_name)) {
             dest = *snd_seq_port_info_get_addr(pinfo);
             found |= 1 << 1;
           }
