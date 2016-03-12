@@ -37,6 +37,36 @@ func connect_to(tport string) (port string, rev bool) {
 		case "capture R":
 			port = "system:capture_2"
 			rev = true
+		case "alsa L":
+			port = "alsa_in:capture_1"
+			rev = true
+		case "alsa R":
+			port = "alsa_in:capture_2"
+			rev = true
+		case "gtklick":
+			port = "gtklick:out"
+			rev = true
+		case "qsynth L":
+			port = "qsynth:l_00"
+			rev = true
+		case "qsynth R":
+			port = "qsynth:r_00"
+			rev = true
+		case "audacious L":
+			port = "audacious-jack_*:out_0" // TODO
+			rev = true
+		case "audacious R":
+			port = "audacious-jack_*:out_1" // TODO
+			rev = true
+		case "nekobee":
+			port = "nekobee DSSI plugin:nekobee DSSI plugin out_1"
+			rev = true
+		case "M1 L":
+			port = "M1:output_1"
+			rev = true
+		case "M1 R":
+			port = "M1:output_2"
+			rev = true
 		}
 	case "nekobee DSSI plugin":
 		port = "jack_mixer:nekobee"
@@ -55,6 +85,13 @@ func connect_to(tport string) (port string, rev bool) {
 			port = "jack_mixer:alsa L"
 		case "capture_2":
 			port = "jack_mixer:alsa R"
+		}
+	case "M1":
+		switch x[1] {
+		case "output_1":
+			port = "jack_mixer:M1 L"
+		case "output_2":
+			port = "jack_mixer:M1 R"
 		}
 	default:
 		port = "jack_mixer:" + x[0]
