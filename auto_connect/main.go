@@ -31,6 +31,10 @@ func connect_to(tport string) (port string, rev bool) {
 			port = "system:playback_1"
 		case "MAIN R":
 			port = "system:playback_2"
+		case "ffmpeg L":
+			port = "ffmpeg:input_1"
+		case "ffmpeg R":
+			port = "ffmpeg:input_2"
 		case "capture L":
 			port = "system:capture_1"
 			rev = true
@@ -73,10 +77,10 @@ func connect_to(tport string) (port string, rev bool) {
 	case "ffmpeg":
 		switch x[1] {
 		case "input_1":
-			port = "jack_mixer:MAIN L"
+			port = "jack_mixer:ffmpeg L"
 			rev = true
 		case "input_2":
-			port = "jack_mixer:MAIN R"
+			port = "jack_mixer:ffmpeg R"
 			rev = true
 		}
 	case "alsa_in":
