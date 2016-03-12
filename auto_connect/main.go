@@ -53,10 +53,10 @@ func connect_to(tport string) (port string, rev bool) {
 			port = "qsynth:r_00"
 			rev = true
 		case "audacious L":
-			port = "audacious-jack_*:out_0" // TODO
+			port = "audacious-jack_*:out_0"
 			rev = true
 		case "audacious R":
-			port = "audacious-jack_*:out_1" // TODO
+			port = "audacious-jack_*:out_1"
 			rev = true
 		case "nekobee":
 			port = "nekobee DSSI plugin:nekobee DSSI plugin out_1"
@@ -102,8 +102,25 @@ func connect_to(tport string) (port string, rev bool) {
 func portlist(tport string) (ports []string) {
 	connect_to, rev := connect_to(tport)
 	ports = Client.GetPorts("", "", 0)
+	if connect_to == "" {
+		return
+	}
+	xx := strings.Split(connect_to, ":")
 	for _, port := range ports {
-		if port == connect_to {
+		x := strings.Split(port, ":")
+		y1 := false
+		y2 := false
+		if strings.HasSuffix(xx[0], "*") {
+			y1 = strings.Index(x[0], strings.TrimSuffix(xx[0], "*")) == 0
+		} else {
+			y1 = x[0] == xx[0]
+		}
+		if strings.HasSuffix(xx[1], "*") {
+			y2 = strings.Index(x[1], strings.TrimSuffix(xx[1], "*")) == 0
+		} else {
+			y2 = x[1] == xx[1]
+		}
+		if y1 && y2 {
 			fmt.Println("match", tport, port)
 			if rev {
 				Queue.PushBack([]string{port, tport})
