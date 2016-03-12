@@ -15,6 +15,15 @@ func connect_to(tport string) (port string, rev bool) {
 	port = ""
 	rev = false
 	x := strings.Split(tport, ":")
+	if strings.Index(x[0], "audacious-") == 0 {
+		switch x[1] {
+		case "out_0":
+			port = "jack_mixer:audacious L"
+		case "out_1":
+			port = "jack_mixer:audacious R"
+		}
+		return
+	}
 	switch x[0] {
 	case "jack_mixer":
 		switch x[1] {
@@ -53,9 +62,9 @@ func connect_to(tport string) (port string, rev bool) {
 	return
 }
 
-func portlist(tport string) {
+func portlist(tport string) (ports []string) {
 	connect_to, rev := connect_to(tport)
-	ports := Client.GetPorts("", "", 0)
+	ports = Client.GetPorts("", "", 0)
 	for _, port := range ports {
 		if port == connect_to {
 			fmt.Println("match", tport, port)
@@ -66,6 +75,7 @@ func portlist(tport string) {
 			}
 		}
 	}
+	return
 }
 
 func update(id jack.PortId, st bool) {
@@ -82,19 +92,21 @@ func main() {
 	}
 	defer client.Close()
 	Client = client
-	portlist("")
+	Queue = list.New()
+	ports := portlist("")
+	for _, tport := range ports {
+		portlist(tport)
+	}
 	client.SetPortRegistrationCallback(update)
 	if code := client.Activate(); code != 0 {
 		panic("activate error")
 	}
-	Queue = list.New()
 	for {
 		time.Sleep(time.Millisecond * 250)
 		v := Queue.Front()
 		if v != nil {
 			Queue.Remove(v)
 			x, _ := v.Value.([]string)
-			fmt.Println("get", x)
 			Client.Connect(x[0], x[1])
 		}
 	}
