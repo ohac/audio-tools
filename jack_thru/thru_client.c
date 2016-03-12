@@ -155,40 +155,6 @@ main ( int argc, char *argv[] )
         exit ( 1 );
     }
 
-    /* Connect the ports.  You can't do this before the client is
-     * activated, because we can't make connections to clients
-     * that aren't running.  Note the confusing (but necessary)
-     * orientation of the driver backend ports: playback ports are
-     * "input" to the backend, and capture ports are "output" from
-     * it.
-     */
-
-    ports = jack_get_ports ( client, NULL, NULL, JackPortIsPhysical|JackPortIsOutput );
-    if ( ports == NULL )
-    {
-        fprintf ( stderr, "no physical capture ports\n" );
-        exit ( 1 );
-    }
-
-    for ( i = 0; i < 2; i++ )
-        if ( jack_connect ( client, ports[i], jack_port_name ( input_ports[i] ) ) )
-            fprintf ( stderr, "cannot connect input ports\n" );
-
-    free ( ports );
-
-    ports = jack_get_ports ( client, NULL, NULL, JackPortIsPhysical|JackPortIsInput );
-    if ( ports == NULL )
-    {
-        fprintf ( stderr, "no physical playback ports\n" );
-        exit ( 1 );
-    }
-
-    for ( i = 0; i < 2; i++ )
-        if ( jack_connect ( client, jack_port_name ( output_ports[i] ), ports[i] ) )
-            fprintf ( stderr, "cannot connect input ports\n" );
-
-    free ( ports );
-
     /* install a signal handler to properly quits jack client */
 #ifdef WIN32
     signal ( SIGINT, signal_handler );
