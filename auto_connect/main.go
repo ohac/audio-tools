@@ -97,6 +97,19 @@ func connect_to(tport string) (port string, rev bool) {
 		case "output_2":
 			port = "jack_mixer:M1 R"
 		}
+	case "sooperlooper":
+		switch x[1] {
+		case "common_out_1":
+			port = "jack_mixer:looper_in L"
+		case "common_out_2":
+			port = "jack_mixer:looper_in R"
+		case "common_in_1":
+			port = "jack_mixer:looper_out L"
+			rev = true
+		case "common_in_2":
+			port = "jack_mixer:looper_out R"
+			rev = true
+		}
 	default:
 		port = "jack_mixer:" + x[0]
 	}
