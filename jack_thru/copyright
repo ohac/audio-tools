@@ -1,0 +1,8 @@
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: jackdmp
+Upstream-Contact: JACK developers <jack-devel@jackaudio.org>
+Source: https://github.com/jackaudio/jack2
+
+Files: *
+Copyright: 2004-2012, Grame <grame@grame.fr>
+License: LGPL-2.1+
