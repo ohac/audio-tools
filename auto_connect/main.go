@@ -178,7 +178,17 @@ func main() {
 		if v != nil {
 			Queue.Remove(v)
 			x, _ := v.Value.([]string)
-			Client.Connect(x[0], x[1])
+			port := Client.GetPortByName(x[0])
+			cons := port.GetConnections()
+			found := false
+			for _, c := range cons {
+				if c == x[1] {
+					found = true
+				}
+			}
+			if !found {
+				Client.Connect(x[0], x[1])
+			}
 		}
 	}
 }
