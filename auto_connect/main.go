@@ -27,91 +27,13 @@ func connect_to(tport string) (port string, rev bool) {
 	switch x[0] {
 	case "jack_mixer":
 		switch x[1] {
-		case "MAIN L":
-			port = "system:playback_1"
-		case "MAIN R":
-			port = "system:playback_2"
-		case "ffmpeg L":
-			port = "ffmpeg:input_1"
-		case "ffmpeg R":
-			port = "ffmpeg:input_2"
-		case "capture L":
-			port = "system:capture_1"
-			rev = true
-		case "capture R":
-			port = "system:capture_2"
-			rev = true
-		case "alsa L":
-			port = "alsa_in:capture_1"
-			rev = true
-		case "alsa R":
-			port = "alsa_in:capture_2"
-			rev = true
-		case "gtklick":
-			port = "gtklick:out"
-			rev = true
-		case "qsynth L":
-			port = "qsynth:l_00"
-			rev = true
-		case "qsynth R":
-			port = "qsynth:r_00"
-			rev = true
 		case "audacious L":
 			port = "audacious-jack_*:out_0"
 			rev = true
 		case "audacious R":
 			port = "audacious-jack_*:out_1"
 			rev = true
-		case "nekobee":
-			port = "nekobee DSSI plugin:nekobee DSSI plugin out_1"
-			rev = true
-		case "M1 L":
-			port = "M1:output_1"
-			rev = true
-		case "M1 R":
-			port = "M1:output_2"
-			rev = true
 		}
-	case "nekobee DSSI plugin":
-		port = "jack_mixer:nekobee"
-	case "ffmpeg":
-		switch x[1] {
-		case "input_1":
-			port = "jack_mixer:ffmpeg L"
-			rev = true
-		case "input_2":
-			port = "jack_mixer:ffmpeg R"
-			rev = true
-		}
-	case "alsa_in":
-		switch x[1] {
-		case "capture_1":
-			port = "jack_mixer:alsa L"
-		case "capture_2":
-			port = "jack_mixer:alsa R"
-		}
-	case "M1":
-		switch x[1] {
-		case "output_1":
-			port = "jack_mixer:M1 L"
-		case "output_2":
-			port = "jack_mixer:M1 R"
-		}
-	case "sooperlooper":
-		switch x[1] {
-		case "common_out_1":
-			port = "jack_mixer:looper_in L"
-		case "common_out_2":
-			port = "jack_mixer:looper_in R"
-		case "common_in_1":
-			port = "jack_mixer:looper_out L"
-			rev = true
-		case "common_in_2":
-			port = "jack_mixer:looper_out R"
-			rev = true
-		}
-	default:
-		port = "jack_mixer:" + x[0]
 	}
 	return
 }
