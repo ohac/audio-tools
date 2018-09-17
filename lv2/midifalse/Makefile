@@ -28,10 +28,11 @@ default: all
 
 all: $(BUILDDIR)manifest.ttl $(BUILDDIR)$(LV2NAME).ttl $(targets) $(BUILDDIR)$(LV2NAME)$(LIB_EXT)
 
-$(BUILDDIR)manifest.ttl:
-	cp manifest.ttl $(BUILDDIR)
+$(BUILDDIR)manifest.ttl: manifest.ttl.in
+	sed "s/@LIB_EXT@/$(LIB_EXT)/g;s/@LV2NAME@/$(LV2NAME)/g" \
+		manifest.ttl.in > $(BUILDDIR)manifest.ttl
 
-$(BUILDDIR)$(LV2NAME).ttl:
+$(BUILDDIR)$(LV2NAME).ttl: $(LV2NAME).ttl
 	cp $(LV2NAME).ttl $(BUILDDIR)$(LV2NAME).ttl
 
 $(BUILDDIR)$(LV2NAME)$(LIB_EXT): $(LV2NAME).c script.h

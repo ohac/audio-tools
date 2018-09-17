@@ -20,11 +20,16 @@
 
 #include <lv2/lv2plug.in/ns/ext/atom/atom.h>
 #include <lv2/lv2plug.in/ns/ext/atom/util.h>
+#include <lv2/lv2plug.in/ns/ext/atom/forge.h>
 #include <lv2/lv2plug.in/ns/ext/log/logger.h>
 #include <lv2/lv2plug.in/ns/ext/midi/midi.h>
+#include <lv2/lv2plug.in/ns/ext/state/state.h>
+#include <lv2/lv2plug.in/ns/ext/patch/patch.h>
+#include <lv2/lv2plug.in/ns/ext/parameters/parameters.h>
 #include <lv2/lv2plug.in/ns/lv2core/lv2.h>
 
-#define MIDIFALSE_URI "http://sighash.info/lv2/midifalse"
+#define MIDIFALSE_URI "http://lv2.sighash.info/midifalse"
+#define MIDIFALSE__onoff MIDIFALSE_URI "#onoff"
 
 #include "script.h"
 
@@ -40,9 +45,23 @@ typedef struct {
   LV2_URID_Map* map;
   LV2_Log_Log* log;
   LV2_Log_Logger logger;
+  LV2_Atom_Forge forge;
 
   struct {
+    LV2_URID atom_Float;
+    LV2_URID atom_String;
+    LV2_URID atom_Path;
+    LV2_URID atom_Resource;
+    LV2_URID atom_Sequence;
+    LV2_URID atom_URID;
+    LV2_URID atom_eventTransfer;
     LV2_URID midi_Event;
+    LV2_URID patch_Set;
+    LV2_URID patch_Get;
+    LV2_URID midifalse_onoff;
+    LV2_URID param_gain;
+    LV2_URID patch_property;
+    LV2_URID patch_value;
   } uris;
 } Midifalse;
 
@@ -62,13 +81,28 @@ instantiate(const LV2_Descriptor* descriptor, double rate,
       self->log = (LV2_Log_Log*)features[i]->data;
     }
   }
+  lv2_atom_forge_init(&self->forge, map);
   lv2_log_logger_init(&self->logger, map, self->log);
   if (!map) {
     lv2_log_error(&self->logger, "Missing feature\n");
     free(self);
     return NULL;
   }
+  self->uris.atom_Float = map->map(map->handle, LV2_ATOM__Float);
+  self->uris.atom_String = map->map(map->handle, LV2_ATOM__String);
+  self->uris.atom_Path = map->map(map->handle, LV2_ATOM__Path);
+  self->uris.atom_Resource = map->map(map->handle, LV2_ATOM__Resource);
+  self->uris.atom_Sequence = map->map(map->handle, LV2_ATOM__Sequence);
+  self->uris.atom_URID = map->map(map->handle, LV2_ATOM__URID);
+  self->uris.atom_eventTransfer = map->map(map->handle, LV2_ATOM__eventTransfer);
   self->uris.midi_Event = map->map(map->handle, LV2_MIDI__MidiEvent);
+  self->uris.param_gain = map->map(map->handle, LV2_PARAMETERS__gain);
+  self->uris.patch_Get = map->map(map->handle, LV2_PATCH__Get);
+  self->uris.patch_Set = map->map(map->handle, LV2_PATCH__Set);
+  self->uris.patch_property = map->map(map->handle, LV2_PATCH__property);
+  self->uris.patch_value = map->map(map->handle, LV2_PATCH__value);
+  self->uris.midifalse_onoff = map->map(map->handle, MIDIFALSE__onoff);
+
   return (LV2_Handle)self;
 }
 
@@ -145,9 +179,33 @@ cleanup(LV2_Handle instance)
   free(instance);
 }
 
+static LV2_State_Status
+save (LV2_Handle instance,
+      LV2_State_Store_Function store,
+      LV2_State_Handle handle,
+      uint32_t flags,
+      const LV2_Feature* const* features)
+{
+  return LV2_STATE_SUCCESS;
+}
+
+static LV2_State_Status
+restore (LV2_Handle instance,
+         LV2_State_Retrieve_Function retrieve,
+         LV2_State_Handle handle,
+         uint32_t flags,
+         const LV2_Feature* const* features)
+{
+  return LV2_STATE_SUCCESS;
+}
+
 static const void*
 extension_data(const char* uri)
 {
+  static const LV2_State_Interface state = { save, restore };
+  if (!strcmp(uri, LV2_STATE__interface)) {
+    return &state;
+  }
   return NULL;
 }
 
