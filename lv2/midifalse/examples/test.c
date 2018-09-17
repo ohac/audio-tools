@@ -7,7 +7,7 @@ static char* fifth = "Tx8*7-<3N%R%C\\7+\\";
 static char* ignore_off = "C%%x/8-3Z%R%%%%";
 static char* vel_off = "$x8*7-<5Z%7+R%%x8*1-";
 static char* ch_off = "@1+@@";
-static char* drum_pad = "\\$4h-7N%%5h\\R%$5h-7N%%4h\\R%\\";
+static char* drum_pad = "\\$4h-7N%%5h\\R%$5h-7N%%4h\\R%$6h-7N%%3i\\R%$7h-7N%%2i\\R%$8h-7N%%1i\\R%$9h-7N%%0i\\R%$ah-7N%%fh\\R%$bh-7N%%eh\\R%$ch-7N%%dh\\R%$dh-7N%%ch\\R%$eh-7N%%bh\\R%$fh-7N%%ah\\R%$0i-7N%%9h\\R%$1i-7N%%8h\\R%$2i-7N%%7h\\R%$3i-7N%%6h\\R%\\";
 
 int test(char* script, uint8_t v1, uint8_t v2, uint8_t v3)
 {
@@ -47,5 +47,7 @@ int main()
   test(drum_pad, 0x90, 36, 90);
   test(drum_pad, 0x90, 37, 90);
   test(drum_pad, 0x90, 38, 90);
+  test(drum_pad, 0x90, 39, 90);
+  test(drum_pad, 0x90, 51, 90);
   return 0;
 }
