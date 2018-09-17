@@ -7,7 +7,7 @@ static char* fifth = "Tx8*7-<3N%R%C\\7+\\";
 static char* ignore_off = "C%%x/8-3Z%R%%%%";
 static char* vel_off = "$x8*7-<5Z%7+R%%x8*1-";
 static char* ch_off = "@1+@@";
-static char* drum_pad = "\\$66*\\T-8N%5h\\%\\R%1+D-8N%4h\\%\\R%%\\";
+static char* drum_pad = "\\$4h-7N%%5h\\R%$5h-7N%%4h\\R%\\";
 
 int test(char* script, uint8_t v1, uint8_t v2, uint8_t v3)
 {
