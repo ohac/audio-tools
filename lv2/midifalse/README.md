@@ -47,6 +47,7 @@ Restart Carla and load it.
 * [ignore note off](./examples/ignore_noteoff.rb)
 * [velocity offset](./examples/vel_offset.rb)
 * [channel offset](./examples/ch_offset.rb)
+* [drum pad](./examples/drum_pad.rb)
 
 ## TODO
 
