@@ -39,6 +39,8 @@ Edit Value in CustomData.
    </CustomData>
 ```
 
+Restart Carla and load it.
+
 ## Examples
 
 * [fifth](./examples/fifth.rb)
