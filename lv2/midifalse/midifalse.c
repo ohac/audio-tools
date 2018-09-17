@@ -154,7 +154,11 @@ run(LV2_Handle instance, uint32_t sample_count)
         script_stack[0] = msg[0];
         script_stack[1] = msg[1];
         script_stack[2] = msg[2];
-        script_stackp = run_script(self->onoff_handler, script_stack, 3);
+        script_stackp = 3;
+        if (self->onoff_handler) {
+          script_stackp = run_script(self->onoff_handler, script_stack,
+            script_stackp);
+        }
         while (script_stackp >= 3) {
           script_stackp -= 3;
           evo.msg[0] = script_stack[script_stackp];
