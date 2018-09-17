@@ -193,6 +193,7 @@ save (LV2_Handle instance,
 {
   Midifalse* self = (Midifalse*)instance;
   char *cfg = self->onoff_handler;
+  if (cfg == NULL) cfg = "R"; // for qtractor
   store(handle, self->uris.midifalse_onoff,
       cfg, strlen(cfg) + 1,
       self->uris.atom_String,
