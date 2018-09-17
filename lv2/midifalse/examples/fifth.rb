@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 require "./common.rb"
 
-program = [
+prog = [
   # initial stack: status note velocity
   S_OP_TUCK, # duplicate note to top of stack
   # if note < 121
@@ -12,8 +12,4 @@ program = [
     S_OP_RETURN
 ]
 
-result = program.join('')
-puts "code: " + result
-puts "XML : " + result.gsub(/</, '&lt;')
-print "C   : "
-p result
+print_result(prog)

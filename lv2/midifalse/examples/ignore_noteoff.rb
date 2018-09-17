@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 require "./common.rb"
 
-program = [
+prog = [
   # initial stack: status note velocity
   # status:
   #   0x80 <= status < 0xf0: voice message
@@ -25,8 +25,4 @@ program = [
     S_OP_DROP, S_OP_DROP, S_OP_DROP, S_OP_DROP, S_OP_RETURN,
 ]
 
-result = program.join('')
-puts "code: " + result
-puts "XML : " + result.gsub(/</, '&lt;')
-print "C   : "
-p result
+print_result(prog)

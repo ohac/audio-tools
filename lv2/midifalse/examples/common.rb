@@ -40,3 +40,11 @@ S_OP_JMP = "J"
 S_OP_JZ = "Z"
 S_OP_JNZ = "N"
 S_OP_RETURN = "R"
+
+def print_result(prog)
+  result = prog.join('')
+  puts "code: " + result
+  puts "XML : " + result.gsub(/</, '&lt;')
+  print "C   : "
+  p result
+end
