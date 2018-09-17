@@ -17,7 +17,7 @@
 // This language is based on the FALSE programming language.
 // http://strlen.com/false-language/
 
-#define OP_PANIC '\0'
+#define OP_EOF '\0'
 #define OP_0 '0'
 #define OP_1 '1'
 #define OP_2 '2'
@@ -41,6 +41,7 @@
 #define OP_SUB '-'
 #define OP_MUL '*'
 #define OP_DIV '/'
+#define OP_MOD '.'
 #define OP_NEGATE '_'
 #define OP_AND '&'
 #define OP_OR '|'
@@ -149,9 +150,46 @@ static int run_script(char *script, uint8_t *stackp, int stacki)
       }
       pc++;
       break;
+    case OP_MOD:
+      stacki--;
+      if (stackp[stacki] > 0) { // else panic
+        stackp[stacki - 1] %= stackp[stacki];
+      }
+      pc++;
+      break;
+#if 0
+    case OP_NEGATE:
+      stackp[stacki - 1] = -stackp[stacki - 1]; // TODO signed int
+      pc++;
+      break;
+#endif
+    case OP_AND:
+      stacki--;
+      stackp[stacki - 1] &= stackp[stacki];
+      pc++;
+      break;
+    case OP_OR:
+      stacki--;
+      stackp[stacki - 1] |= stackp[stacki];
+      pc++;
+      break;
+    case OP_NOT:
+      stackp[stacki - 1] = ~stackp[stacki - 1];
+      pc++;
+      break;
     case OP_LESSTHAN:
       stacki--;
       stackp[stacki - 1] = stackp[stacki - 1] < stackp[stacki] ? 1 : 0;
+      pc++;
+      break;
+    case OP_GREATERTHAN:
+      stacki--;
+      stackp[stacki - 1] = stackp[stacki - 1] > stackp[stacki] ? 1 : 0;
+      pc++;
+      break;
+    case OP_EQUAL:
+      stacki--;
+      stackp[stacki - 1] = stackp[stacki - 1] == stackp[stacki] ? 1 : 0;
       pc++;
       break;
     case OP_JMP:
@@ -180,10 +218,21 @@ static int run_script(char *script, uint8_t *stackp, int stacki)
       stackp[stacki - 1] = tmp;
       pc++;
       break;
+    case OP_ROT:
+      tmp = stackp[stacki - 3];
+      stackp[stacki - 3] = stackp[stacki - 2];
+      stackp[stacki - 2] = stackp[stacki - 1];
+      stackp[stacki - 1] = tmp;
+      pc++;
+      break;
+    case OP_PICK:
+      stackp[stacki - 1] = stackp[stacki - 2 - stackp[stacki - 1]];
+      pc++;
+      break;
     case OP_RETURN:
-    case OP_PANIC:
+    case OP_EOF:
       return stacki;
-    default:
+    default: // NOP, NOP2
       pc++;
       break;
     }
