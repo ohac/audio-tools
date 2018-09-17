@@ -5,6 +5,7 @@
 
 static char* fifth = "Tx8*7-<3N%R%C\\7+\\R";
 static char* ignore_off = "C%%x/8-3Z%R%%%%R";
+static char* vel_off = "$x8*7-<5Z%7+R%%x8*1-R";
 
 int test(char* script, uint8_t v1, uint8_t v2, uint8_t v3)
 {
@@ -34,5 +35,10 @@ int main()
   test(fifth, 0x80, 125, 100);
   test(ignore_off, 0x80, 9, 100);
   test(ignore_off, 0x92, 9, 100);
+  test(vel_off, 0x90, 11, 127);
+  test(vel_off, 0x90, 11, 120);
+  test(vel_off, 0x90, 11, 119);
+  test(vel_off, 0x90, 11, 118);
+  test(vel_off, 0x90, 11, 0);
   return 0;
 }

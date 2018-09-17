@@ -43,4 +43,14 @@ Restart Carla and load it.
 
 ## Examples
 
-* [fifth](./examples/fifth.rb)
+* [add fifth note](./examples/fifth.rb)
+* [ignore note off](./examples/ignore_noteoff.rb)
+* [velocity offset](./examples/vel_offset.rb)
+
+## TODO
+
+* state
+* storage
+* timer event
+* CC, sustain pedal, pitch bend, mod wheel, ...
+* program change
