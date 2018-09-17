@@ -4,7 +4,13 @@
 @prefix midi: <http://lv2plug.in/ns/ext/midi#> .
 @prefix urid: <http://lv2plug.in/ns/ext/urid#> .
 @prefix state: <http://lv2plug.in/ns/ext/state#> .
+@prefix patch: <http://lv2plug.in/ns/ext/patch#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://lv2.sighash.info/midifalse#onoff>
+  a lv2:Parameter ;
+  rdfs:label "onoff" ;
+  rdfs:range atom:String .
 
 <http://lv2.sighash.info/midifalse>
 	a lv2:Plugin ;
@@ -13,6 +19,7 @@
 	lv2:requiredFeature urid:map ;
 	lv2:optionalFeature lv2:hardRTCapable ;
 	lv2:extensionData state:interface ;
+	patch:writable <http://lv2.sighash.info/midifalse#onoff> ;
 	lv2:port [
 		a lv2:InputPort ,
 			atom:AtomPort ;
@@ -30,4 +37,7 @@
 		lv2:index 1 ;
 		lv2:symbol "midiout" ;
 		lv2:name "MIDI Out"
+	] ;
+	state:state [
+		<http://lv2.sighash.info/midifalse#onoff> "Tx8*7-<3N%R%C\\7+\\R"
 	] .

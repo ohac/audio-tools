@@ -16,6 +16,7 @@
 */
 
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
 #include <lv2/lv2plug.in/ns/ext/atom/atom.h>
@@ -63,6 +64,8 @@ typedef struct {
     LV2_URID patch_property;
     LV2_URID patch_value;
   } uris;
+
+  char* onoff_handler;
 } Midifalse;
 
 static LV2_Handle
@@ -151,7 +154,7 @@ run(LV2_Handle instance, uint32_t sample_count)
         script_stack[0] = msg[0];
         script_stack[1] = msg[1];
         script_stack[2] = msg[2];
-        script_stackp = run_script(note_onoff_handler, script_stack, 3);
+        script_stackp = run_script(self->onoff_handler, script_stack, 3);
         while (script_stackp >= 3) {
           script_stackp -= 3;
           evo.msg[0] = script_stack[script_stackp];
@@ -176,6 +179,8 @@ deactivate(LV2_Handle instance)
 static void
 cleanup(LV2_Handle instance)
 {
+  Midifalse* self = (Midifalse*)instance;
+  free(self->onoff_handler);
   free(instance);
 }
 
@@ -186,6 +191,12 @@ save (LV2_Handle instance,
       uint32_t flags,
       const LV2_Feature* const* features)
 {
+  Midifalse* self = (Midifalse*)instance;
+  char *cfg = self->onoff_handler;
+  store(handle, self->uris.midifalse_onoff,
+      cfg, strlen(cfg) + 1,
+      self->uris.atom_String,
+      LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE);
   return LV2_STATE_SUCCESS;
 }
 
@@ -196,6 +207,19 @@ restore (LV2_Handle instance,
          uint32_t flags,
          const LV2_Feature* const* features)
 {
+  Midifalse* self = (Midifalse*)instance;
+  size_t size;
+  uint32_t type;
+  uint32_t valflags;
+  const void* value;
+  free(self->onoff_handler);
+  self->onoff_handler = NULL;
+  value = retrieve(handle, self->uris.midifalse_onoff, &size, &type, &valflags);
+  if (value) {
+    const char* cfg = (const char*)value;
+    self->onoff_handler = calloc(1, strlen(cfg) + 1);
+    strcpy(self->onoff_handler, cfg);
+  }
   return LV2_STATE_SUCCESS;
 }
 
