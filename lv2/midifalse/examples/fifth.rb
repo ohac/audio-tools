@@ -3,13 +3,12 @@ require "./common.rb"
 
 prog = [
   # initial stack: status note velocity
-  S_OP_TUCK, # duplicate note to top of stack
+  OP_TUCK, # duplicate note to top of stack
   # if note < 121
-  S_OP_16, S_OP_8, S_OP_MUL, S_OP_7, S_OP_SUB, S_OP_LESSTHAN, S_OP_3, S_OP_JNZ,
-    S_OP_DROP, S_OP_RETURN, # thru
+  OP_16, OP_8, OP_MUL, OP_7, OP_SUB, OP_LESSTHAN, OP_3, OP_JNZ,
+    OP_DROP, OP_RETURN, # thru
   # else
-    S_OP_DROP, S_OP_3DUP, S_OP_SWAP, S_OP_7, S_OP_ADD, S_OP_SWAP, # add 5th
-    S_OP_RETURN
+    OP_DROP, OP_3DUP, OP_SWAP, OP_7, OP_ADD, OP_SWAP, # add 5th
 ]
 
 print_result(prog)

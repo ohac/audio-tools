@@ -3,10 +3,11 @@
 
 #include "../script.h"
 
-static char* fifth = "Tx8*7-<3N%R%C\\7+\\R";
-static char* ignore_off = "C%%x/8-3Z%R%%%%R";
-static char* vel_off = "$x8*7-<5Z%7+R%%x8*1-R";
+static char* fifth = "Tx8*7-<3N%R%C\\7+\\";
+static char* ignore_off = "C%%x/8-3Z%R%%%%";
+static char* vel_off = "$x8*7-<5Z%7+R%%x8*1-";
 static char* ch_off = "@1+@@";
+static char* drum_pad = "\\$66*\\T-8N%1+\\%\\R%1+D-8N%1-\\%\\R%%\\";
 
 int test(char* script, uint8_t v1, uint8_t v2, uint8_t v3)
 {
@@ -43,5 +44,8 @@ int main()
   test(vel_off, 0x90, 11, 0);
   test(ch_off, 0x90, 12, 90);
   test(ch_off, 0x8e, 12, 90);
+  test(drum_pad, 0x90, 36, 90);
+  test(drum_pad, 0x90, 37, 90);
+  test(drum_pad, 0x90, 38, 90);
   return 0;
 }

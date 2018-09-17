@@ -16,13 +16,13 @@ prog = [
   #   0xf8, 0xfa, 0xfb, 0xfc, 0xfe, 0xff: system realtime message
   #   < 0x80, 0xf4, 0xf5, 0xf7, 0xf9, 0xfd: invalid
 
-  S_OP_3DUP, S_OP_DROP, S_OP_DROP, # duplicate status to top
-  S_OP_16, S_OP_DIV, # top >>= 4
-  S_OP_8, S_OP_SUB, # top -= 8
-  S_OP_3, S_OP_JZ, # if note off then jump to else
-    S_OP_DROP, S_OP_RETURN,
+  OP_3DUP, OP_DROP, OP_DROP, # duplicate status to top
+  OP_16, OP_DIV, # top >>= 4
+  OP_8, OP_SUB, # top -= 8
+  OP_3, OP_JZ, # if note off then jump to else
+    OP_DROP, OP_RETURN,
   # else
-    S_OP_DROP, S_OP_DROP, S_OP_DROP, S_OP_DROP, S_OP_RETURN,
+    OP_DROP, OP_DROP, OP_DROP, OP_DROP,
 ]
 
 print_result(prog)
