@@ -45,6 +45,14 @@
 #define OP_NEGATE '_'
 #define OP_AND '&'
 #define OP_OR '|'
+#define OP_ADD_10 'g'
+#define OP_ADD_20 'h'
+#define OP_ADD_30 'i'
+#define OP_ADD_40 'j'
+#define OP_ADD_50 'k'
+#define OP_ADD_60 'l'
+#define OP_ADD_70 'm'
+#define OP_ADD_80 'n'
 #define OP_NOT '~'
 #define OP_LESSTHAN '<'
 #define OP_GREATERTHAN '>'
@@ -89,7 +97,7 @@ static int run_script(char *script, uint8_t *stackp, int stacki)
     case OP_13:
     case OP_14:
     case OP_15:
-      stackp[stacki] = op - 'a' + 10;
+      stackp[stacki] = op - OP_10 + 10;
       stacki++;
       pc++;
       break;
@@ -131,6 +139,17 @@ static int run_script(char *script, uint8_t *stackp, int stacki)
     case OP_ADD:
       stacki--;
       stackp[stacki - 1] += stackp[stacki];
+      pc++;
+      break;
+    case OP_ADD_10: // 'g'
+    case OP_ADD_20:
+    case OP_ADD_30:
+    case OP_ADD_40:
+    case OP_ADD_50:
+    case OP_ADD_60:
+    case OP_ADD_70:
+    case OP_ADD_80:
+      stackp[stacki - 1] += (op - OP_ADD_10 + 1) << 4;
       pc++;
       break;
     case OP_SUB:

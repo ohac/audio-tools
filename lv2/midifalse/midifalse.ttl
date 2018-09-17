@@ -39,5 +39,5 @@
 		lv2:name "MIDI Out"
 	] ;
 	state:state [
-		<http://lv2.sighash.info/midifalse#onoff> "Tx8*7-<3N%R%C\\7+\\R"
+		<http://lv2.sighash.info/midifalse#onoff> "Tx8*7-<3N%R%C\\7+\\"
 	] .

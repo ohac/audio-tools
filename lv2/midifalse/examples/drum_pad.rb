@@ -16,7 +16,7 @@ prog = [
 
   OP_SUB, OP_8, OP_JNZ, # if note != 36 then jump to else
     OP_DROP,
-    OP_1, OP_ADD, # 37
+    OP_5, OP_ADD_20, # 37
     OP_SWAP, OP_DROP, # stack: st vel note
     OP_SWAP, OP_RETURN,
 
@@ -27,7 +27,7 @@ prog = [
 
   OP_SUB, OP_8, OP_JNZ, # if note != 37 then jump to else
     OP_DROP,
-    OP_1, OP_SUB, # 36
+    OP_4, OP_ADD_20, # 36
     OP_SWAP, OP_DROP, # stack: st vel note
     OP_SWAP, OP_RETURN,
 

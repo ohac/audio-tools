@@ -35,13 +35,13 @@ Edit Value in CustomData.
    <CustomData>
     <Type>http://lv2plug.in/ns/ext/atom#String</Type>
     <Key>http://lv2.sighash.info/midifalse#onoff</Key>
-    <Value>Tx8*7-&lt;3N%R%C\7+\R</Value>
+    <Value>Tx8*7-&lt;3N%R%C\7+\</Value>
    </CustomData>
 ```
 
 Restart Carla and load it.
 
-## Examples
+## Script examples
 
 * [add fifth note](./examples/fifth.rb)
 * [ignore note off](./examples/ignore_noteoff.rb)
