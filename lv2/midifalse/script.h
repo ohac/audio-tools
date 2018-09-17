@@ -17,6 +17,7 @@
 // This language is based on the FALSE programming language.
 // http://strlen.com/false-language/
 
+#define OP_PANIC '\0'
 #define OP_0 '0'
 #define OP_1 '1'
 #define OP_2 '2'
@@ -64,7 +65,7 @@ static int run_script(char *script, uint8_t *stackp, int stacki)
 {
   int pc = 0;
   uint8_t tmp;
-  while (1) {
+  while (pc >= 0 && stacki >= 0) {
     uint8_t op = (uint8_t)script[pc];
     switch (op) {
     case OP_0:
@@ -143,7 +144,7 @@ static int run_script(char *script, uint8_t *stackp, int stacki)
       break;
     case OP_DIV:
       stacki--;
-      if (stackp[stacki] > 0) {
+      if (stackp[stacki] > 0) { // else panic
         stackp[stacki - 1] /= stackp[stacki];
       }
       pc++;
@@ -180,10 +181,12 @@ static int run_script(char *script, uint8_t *stackp, int stacki)
       pc++;
       break;
     case OP_RETURN:
+    case OP_PANIC:
       return stacki;
     default:
       pc++;
       break;
     }
   }
+  return stacki; // panic
 }
