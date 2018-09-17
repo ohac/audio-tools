@@ -46,6 +46,7 @@ Restart Carla and load it.
 * [add fifth note](./examples/fifth.rb)
 * [ignore note off](./examples/ignore_noteoff.rb)
 * [velocity offset](./examples/vel_offset.rb)
+* [channel offset](./examples/ch_offset.rb)
 
 ## TODO
 
