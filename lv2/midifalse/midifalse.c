@@ -48,6 +48,8 @@ typedef struct {
   LV2_Log_Logger logger;
   LV2_Atom_Forge forge;
 
+  LV2_Atom_Forge_Frame notify_frame;
+
   struct {
     LV2_URID atom_Float;
     LV2_URID atom_String;
@@ -76,6 +78,7 @@ instantiate(const LV2_Descriptor* descriptor, double rate,
   Midifalse* self = (Midifalse*)calloc(1, sizeof(Midifalse));
   LV2_URID_Map* map = NULL;
   int i;
+
   for (i = 0; features[i]; ++i) {
     if (!strcmp (features[i]->URI, LV2_URID__map)) {
       map = (LV2_URID_Map*)features[i]->data;
@@ -140,6 +143,12 @@ run(LV2_Handle instance, uint32_t sample_count)
   MIDINoteEvent evo;
   uint8_t script_stack[256];
   int script_stackp;
+
+  lv2_atom_forge_set_buffer(&self->forge,
+                            (uint8_t*)self->out,
+                            out_capacity);
+  lv2_atom_forge_sequence_head(&self->forge, &self->notify_frame, 0);
+
   lv2_atom_sequence_clear(self->out);
   self->out->atom.type = self->in->atom.type;
   LV2_ATOM_SEQUENCE_FOREACH(self->in, ev) {
@@ -171,6 +180,40 @@ run(LV2_Handle instance, uint32_t sample_count)
         lv2_atom_sequence_append_event(self->out, out_capacity, ev);
         break;
       }
+    } else if (lv2_atom_forge_is_object_type(&self->forge, ev->body.type)) {
+      const LV2_Atom_Object* obj = (const LV2_Atom_Object*)&ev->body;
+      if (obj->body.otype == self->uris.patch_Set) {
+        const LV2_Atom* property = NULL;
+        const LV2_Atom* value = NULL;
+        lv2_atom_object_get(obj, self->uris.patch_property, &property,
+                            self->uris.patch_value, &value, 0);
+        if (!property) continue;
+        if (property->type != self->uris.atom_URID) continue;
+        const uint32_t key = ((const LV2_Atom_URID*)property)->body;
+        if (key == self->uris.midifalse_onoff) {
+          const LV2_Atom* property = NULL;
+          const LV2_Atom* value = NULL;
+          lv2_atom_object_get(obj, self->uris.patch_property, &property,
+                              self->uris.patch_value, &value, 0);
+          if (value->type == self->uris.atom_String) {
+            char* cfg = (char*)((LV2_Atom_String*)value + 1);
+            if (self->onoff_handler) free(self->onoff_handler);
+            self->onoff_handler = calloc(1, strlen(cfg) + 1);
+            strcpy(self->onoff_handler, cfg);
+          }
+        }
+      } else if (obj->body.otype == self->uris.patch_Get) {
+        char *cfg = self->onoff_handler;
+        if (cfg == NULL) cfg = "";
+        LV2_Atom_Forge_Frame frame;
+        lv2_atom_forge_frame_time(&self->forge, ev->time.frames);
+        lv2_atom_forge_object( &self->forge, &frame, 0, self->uris.patch_Set);
+        lv2_atom_forge_key(&self->forge, self->uris.patch_property);
+        lv2_atom_forge_urid(&self->forge, self->uris.midifalse_onoff);
+        lv2_atom_forge_key(&self->forge, self->uris.patch_value);
+        lv2_atom_forge_string(&self->forge, cfg, strlen(cfg));
+        lv2_atom_forge_pop(&self->forge, &frame);
+      }
     }
   }
 }
@@ -197,7 +240,7 @@ save (LV2_Handle instance,
 {
   Midifalse* self = (Midifalse*)instance;
   char *cfg = self->onoff_handler;
-  if (cfg == NULL) cfg = "R"; // for qtractor
+  if (cfg == NULL) cfg = "";
   store(handle, self->uris.midifalse_onoff,
       cfg, strlen(cfg) + 1,
       self->uris.atom_String,
