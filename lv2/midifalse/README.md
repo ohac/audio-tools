@@ -9,6 +9,12 @@ make
 make install
 ```
 
+## Usage (for jalv)
+
+```
+jalv-gtk http://lv2.sighash.info/midifalse
+```
+
 ## Usage (for Carla)
 
 Refresh LV2
