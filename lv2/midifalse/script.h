@@ -69,8 +69,10 @@
 #define OP_JZ 'Z'
 #define OP_JNZ 'N'
 #define OP_RETURN 'R'
+#define OP_PARAM 'p'
 
-static int run_script(char *script, uint8_t *stackp, int stacki)
+static int run_script(char *script, uint8_t *stackp, int stacki,
+  uint8_t *prms, LV2_Log_Logger *logger)
 {
   int pc = 0;
   uint8_t tmp;
@@ -246,6 +248,13 @@ static int run_script(char *script, uint8_t *stackp, int stacki)
       break;
     case OP_PICK:
       stackp[stacki - 1] = stackp[stacki - 2 - stackp[stacki - 1]];
+      pc++;
+      break;
+    case OP_PARAM:
+      tmp = stackp[stacki - 1];
+      tmp = prms[tmp] - '0'; // TODO debug code
+      lv2_log_note(logger, "logger test %x\n", tmp); // TODO debug code
+      stackp[stacki - 1] = tmp;
       pc++;
       break;
     case OP_RETURN:
