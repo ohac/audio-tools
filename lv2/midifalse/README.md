@@ -15,6 +15,8 @@ make install
 jalv-gtk http://lv2.sighash.info/midifalse
 ```
 
+Input script and parameters then hit enter key.
+
 ## Usage (for Carla)
 
 Refresh LV2
