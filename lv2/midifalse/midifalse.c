@@ -31,6 +31,7 @@
 
 #define MIDIFALSE_URI "http://lv2.sighash.info/midifalse"
 #define MIDIFALSE__onoff MIDIFALSE_URI "#onoff"
+#define MIDIFALSE__params MIDIFALSE_URI "#params"
 
 #include "script.h"
 
@@ -62,12 +63,14 @@ typedef struct {
     LV2_URID patch_Set;
     LV2_URID patch_Get;
     LV2_URID midifalse_onoff;
+    LV2_URID midifalse_params;
     LV2_URID param_gain;
     LV2_URID patch_property;
     LV2_URID patch_value;
   } uris;
 
   char* onoff_handler;
+  char* params;
 } Midifalse;
 
 static LV2_Handle
@@ -108,6 +111,7 @@ instantiate(const LV2_Descriptor* descriptor, double rate,
   self->uris.patch_property = map->map(map->handle, LV2_PATCH__property);
   self->uris.patch_value = map->map(map->handle, LV2_PATCH__value);
   self->uris.midifalse_onoff = map->map(map->handle, MIDIFALSE__onoff);
+  self->uris.midifalse_params = map->map(map->handle, MIDIFALSE__params);
 
   return (LV2_Handle)self;
 }
@@ -201,6 +205,17 @@ run(LV2_Handle instance, uint32_t sample_count)
             self->onoff_handler = calloc(1, strlen(cfg) + 1);
             strcpy(self->onoff_handler, cfg);
           }
+        } else if (key == self->uris.midifalse_params) {
+          const LV2_Atom* property = NULL;
+          const LV2_Atom* value = NULL;
+          lv2_atom_object_get(obj, self->uris.patch_property, &property,
+                              self->uris.patch_value, &value, 0);
+          if (value->type == self->uris.atom_String) {
+            char* cfg = (char*)((LV2_Atom_String*)value + 1);
+            if (self->params) free(self->params);
+            self->params = calloc(1, strlen(cfg) + 1);
+            strcpy(self->params, cfg);
+          }
         }
       } else if (obj->body.otype == self->uris.patch_Get) {
         char *cfg = self->onoff_handler;
@@ -210,6 +225,16 @@ run(LV2_Handle instance, uint32_t sample_count)
         lv2_atom_forge_object( &self->forge, &frame, 0, self->uris.patch_Set);
         lv2_atom_forge_key(&self->forge, self->uris.patch_property);
         lv2_atom_forge_urid(&self->forge, self->uris.midifalse_onoff);
+        lv2_atom_forge_key(&self->forge, self->uris.patch_value);
+        lv2_atom_forge_string(&self->forge, cfg, strlen(cfg));
+        lv2_atom_forge_pop(&self->forge, &frame);
+
+        cfg = self->params;
+        if (cfg == NULL) cfg = "";
+        lv2_atom_forge_frame_time(&self->forge, ev->time.frames);
+        lv2_atom_forge_object( &self->forge, &frame, 0, self->uris.patch_Set);
+        lv2_atom_forge_key(&self->forge, self->uris.patch_property);
+        lv2_atom_forge_urid(&self->forge, self->uris.midifalse_params);
         lv2_atom_forge_key(&self->forge, self->uris.patch_value);
         lv2_atom_forge_string(&self->forge, cfg, strlen(cfg));
         lv2_atom_forge_pop(&self->forge, &frame);
@@ -228,6 +253,7 @@ cleanup(LV2_Handle instance)
 {
   Midifalse* self = (Midifalse*)instance;
   free(self->onoff_handler);
+  free(self->params);
   free(instance);
 }
 
@@ -242,6 +268,12 @@ save (LV2_Handle instance,
   char *cfg = self->onoff_handler;
   if (cfg == NULL) cfg = "";
   store(handle, self->uris.midifalse_onoff,
+      cfg, strlen(cfg) + 1,
+      self->uris.atom_String,
+      LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE);
+  cfg = self->params;
+  if (cfg == NULL) cfg = "";
+  store(handle, self->uris.midifalse_params,
       cfg, strlen(cfg) + 1,
       self->uris.atom_String,
       LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE);
@@ -267,6 +299,14 @@ restore (LV2_Handle instance,
     const char* cfg = (const char*)value;
     self->onoff_handler = calloc(1, strlen(cfg) + 1);
     strcpy(self->onoff_handler, cfg);
+  }
+  free(self->params);
+  self->params = NULL;
+  value = retrieve(handle, self->uris.midifalse_params, &size, &type, &valflags);
+  if (value) {
+    const char* cfg = (const char*)value;
+    self->params = calloc(1, strlen(cfg) + 1);
+    strcpy(self->params, cfg);
   }
   return LV2_STATE_SUCCESS;
 }
